@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Barrio Records</title>
   <style>
     body {
@@ -27,6 +27,7 @@
     }
     .controls {
       margin-top: 2rem;
+      display: none; /* Oculto inicialmente */
     }
     input[type=range] {
       width: 80%;
@@ -37,34 +38,31 @@
   <h1>🎵 Barrio Records</h1>
   <div id="botones"></div>
 
-  <div class="controls" id="controles" style="display: none;">
-    <div>
-      <button id="playPauseBtn">⏸️</button>
-    </div>
-    <div>
-      <span id="tiempoActual">00:00</span>
-      <input type="range" id="barraProgreso" value="0" min="0" step="1">
-      <span id="duracionTotal">00:00</span>
-    </div>
+  <div class="controls" id="controles">
+    <button id="playPauseBtn">⏸️</button>
+    <br />
+    <span id="tiempoActual">00:00</span>
+    <input type="range" id="barraProgreso" min="0" step="1" value="0" />
+    <span id="duracionTotal">00:00</span>
   </div>
 
   <script>
     const canciones = [
-      { nombre: "Anbhul", url: "https://www.dropbox.com/scl/fi/c7d2h1496e6y9fbkytpx7/Anbhul.mp3?rlkey=ro6dqob1vh3uxdmc26yx20gko&st=m5bdb4hs&dl=1" },
-      { nombre: "Barrio", url: "https://www.dropbox.com/scl/fi/vr6yk0hrwpwvny2foqrv2/Barrio.mp3?rlkey=qo06fox56wq05bxzef4h68yu2&st=a5689fvw&dl=1" },
-      { nombre: "Caco", url: "https://www.dropbox.com/scl/fi/qkp27k2j3c5y62h7zfztj/Caco.mp3?rlkey=w0ugth3o3rcd3j512wybmxi4f&st=215r20t6&dl=1" },
-      { nombre: "Gurutze", url: "https://www.dropbox.com/scl/fi/a7tt2ani7g6dr3wm650ms/Gurutze.mp3?rlkey=jplzbfzb2jkrurungeciszfhz&st=n7v1bmnr&dl=1" },
-      { nombre: "JP", url: "https://www.dropbox.com/scl/fi/0eedptn8prlrt1kvmxduo/JP.mp3?rlkey=j140sak0uht4inzypr6cdch9k&st=t2cz62ts&dl=1" },
-      { nombre: "Molla", url: "https://www.dropbox.com/scl/fi/dyysnj9wpgg8uzfqmevjr/Molla.mp3?rlkey=vf3wa4jkmi9qq5vo6dlki2pyf&st=4eezgixe&dl=1" },
-      { nombre: "Pedo", url: "https://www.dropbox.com/scl/fi/ivfkre952qd06kyup2a7c/Pedo.mp3?rlkey=3hcfeu564ugkzbfqnmmmxi682&st=v425avrv&dl=1" },
-      { nombre: "Zangano", url: "https://www.dropbox.com/scl/fi/7g3lw52ew8d1wdp3o6i1d/Zangano.mp3?rlkey=zcn87ex03n7qbcrp425amruzx&st=ddt49464&dl=1" },
+      { nombre: "Anbhul", url: "https://www.dropbox.com/scl/fi/c7d2h1496e6y9fbkytpx7/Anbhul.mp3?dl=1" },
+      { nombre: "Barrio", url: "https://www.dropbox.com/scl/fi/vr6yk0hrwpwvny2foqrv2/Barrio.mp3?dl=1" },
+      { nombre: "Caco", url: "https://www.dropbox.com/scl/fi/qkp27k2j3c5y62h7zfztj/Caco.mp3?dl=1" },
+      { nombre: "Gurutze", url: "https://www.dropbox.com/scl/fi/a7tt2ani7g6dr3wm650ms/Gurutze.mp3?dl=1" },
+      { nombre: "JP", url: "https://www.dropbox.com/scl/fi/0eedptn8prlrt1kvmxduo/JP.mp3?dl=1" },
+      { nombre: "Molla", url: "https://www.dropbox.com/scl/fi/dyysnj9wpgg8uzfqmevjr/Molla.mp3?dl=1" },
+      { nombre: "Pedo", url: "https://www.dropbox.com/scl/fi/ivfkre952qd06kyup2a7c/Pedo.mp3?dl=1" },
+      { nombre: "Zangano", url: "https://www.dropbox.com/scl/fi/7g3lw52ew8d1wdp3o6i1d/Zangano.mp3?dl=1" },
     ];
 
     let audio = new Audio();
-    let enReproduccion = false;
-    let intervalo;
+    let reproduciendo = false;
+    let intervaloActualizacion;
 
-    const contenedor = document.getElementById("botones");
+    const contenedorBotones = document.getElementById("botones");
     const controles = document.getElementById("controles");
     const playPauseBtn = document.getElementById("playPauseBtn");
     const barraProgreso = document.getElementById("barraProgreso");
@@ -72,56 +70,63 @@
     const duracionTotal = document.getElementById("duracionTotal");
 
     function formatearTiempo(segundos) {
-      const min = Math.floor(segundos / 60).toString().padStart(2, '0');
-      const sec = Math.floor(segundos % 60).toString().padStart(2, '0');
-      return `${min}:${sec}`;
+      const min = Math.floor(segundos / 60).toString().padStart(2, "0");
+      const seg = Math.floor(segundos % 60).toString().padStart(2, "0");
+      return `${min}:${seg}`;
     }
 
     canciones.forEach(cancion => {
-      const boton = document.createElement("button");
-      boton.textContent = cancion.nombre;
-      boton.onclick = () => {
+      const btn = document.createElement("button");
+      btn.textContent = cancion.nombre;
+      btn.onclick = () => {
         audio.src = cancion.url;
-        audio.play();
-        controles.style.display = "block";
-        playPauseBtn.textContent = "⏸️";
-        enReproduccion = true;
+        audio.play().then(() => {
+          reproduciendo = true;
+          playPauseBtn.textContent = "⏸️";
+          controles.style.display = "block";
+        }).catch(e => {
+          alert("Error al reproducir la canción. Comprueba la URL o permisos CORS.");
+          console.error(e);
+        });
 
         audio.onloadedmetadata = () => {
           barraProgreso.max = Math.floor(audio.duration);
           duracionTotal.textContent = formatearTiempo(audio.duration);
         };
 
-        intervalo && clearInterval(intervalo);
-        intervalo = setInterval(() => {
+        clearInterval(intervaloActualizacion);
+        intervaloActualizacion = setInterval(() => {
           barraProgreso.value = Math.floor(audio.currentTime);
           tiempoActual.textContent = formatearTiempo(audio.currentTime);
         }, 500);
       };
-      contenedor.appendChild(boton);
+      contenedorBotones.appendChild(btn);
     });
 
     playPauseBtn.onclick = () => {
-      if (enReproduccion) {
+      if (!audio.src) return; // No hacer nada si no hay canción cargada
+
+      if (reproduciendo) {
         audio.pause();
         playPauseBtn.textContent = "▶️";
       } else {
         audio.play();
         playPauseBtn.textContent = "⏸️";
       }
-      enReproduccion = !enReproduccion;
+      reproduciendo = !reproduciendo;
     };
 
-    barraProgreso.addEventListener("input", () => {
+    barraProgreso.oninput = () => {
       audio.currentTime = barraProgreso.value;
-    });
+      tiempoActual.textContent = formatearTiempo(audio.currentTime);
+    };
 
-    audio.addEventListener("ended", () => {
+    audio.onended = () => {
       playPauseBtn.textContent = "▶️";
-      enReproduccion = false;
+      reproduciendo = false;
       barraProgreso.value = 0;
       tiempoActual.textContent = "00:00";
-    });
+    };
   </script>
 </body>
 </html>
