@@ -25,11 +25,28 @@
     h1 {
       margin-bottom: 2rem;
     }
+    .controls {
+      margin-top: 2rem;
+    }
+    input[type=range] {
+      width: 80%;
+    }
   </style>
 </head>
 <body>
   <h1>🎵 Barrio Records</h1>
   <div id="botones"></div>
+
+  <div class="controls" id="controles" style="display: none;">
+    <div>
+      <button id="playPauseBtn">⏸️</button>
+    </div>
+    <div>
+      <span id="tiempoActual">00:00</span>
+      <input type="range" id="barraProgreso" value="0" min="0" step="1">
+      <span id="duracionTotal">00:00</span>
+    </div>
+  </div>
 
   <script>
     const canciones = [
@@ -43,22 +60,67 @@
       { nombre: "Zangano", url: "https://www.dropbox.com/scl/fi/7g3lw52ew8d1wdp3o6i1d/Zangano.mp3?rlkey=zcn87ex03n7qbcrp425amruzx&st=ddt49464&dl=1" },
     ];
 
-    let audioActual = null;
+    let audio = new Audio();
+    let enReproduccion = false;
+    let intervalo;
 
     const contenedor = document.getElementById("botones");
+    const controles = document.getElementById("controles");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const barraProgreso = document.getElementById("barraProgreso");
+    const tiempoActual = document.getElementById("tiempoActual");
+    const duracionTotal = document.getElementById("duracionTotal");
+
+    function formatearTiempo(segundos) {
+      const min = Math.floor(segundos / 60).toString().padStart(2, '0');
+      const sec = Math.floor(segundos % 60).toString().padStart(2, '0');
+      return `${min}:${sec}`;
+    }
 
     canciones.forEach(cancion => {
       const boton = document.createElement("button");
       boton.textContent = cancion.nombre;
       boton.onclick = () => {
-        if (audioActual) {
-          audioActual.pause();
-          audioActual.currentTime = 0;
-        }
-        audioActual = new Audio(cancion.url);
-        audioActual.play();
+        audio.src = cancion.url;
+        audio.play();
+        controles.style.display = "block";
+        playPauseBtn.textContent = "⏸️";
+        enReproduccion = true;
+
+        audio.onloadedmetadata = () => {
+          barraProgreso.max = Math.floor(audio.duration);
+          duracionTotal.textContent = formatearTiempo(audio.duration);
+        };
+
+        intervalo && clearInterval(intervalo);
+        intervalo = setInterval(() => {
+          barraProgreso.value = Math.floor(audio.currentTime);
+          tiempoActual.textContent = formatearTiempo(audio.currentTime);
+        }, 500);
       };
       contenedor.appendChild(boton);
+    });
+
+    playPauseBtn.onclick = () => {
+      if (enReproduccion) {
+        audio.pause();
+        playPauseBtn.textContent = "▶️";
+      } else {
+        audio.play();
+        playPauseBtn.textContent = "⏸️";
+      }
+      enReproduccion = !enReproduccion;
+    };
+
+    barraProgreso.addEventListener("input", () => {
+      audio.currentTime = barraProgreso.value;
+    });
+
+    audio.addEventListener("ended", () => {
+      playPauseBtn.textContent = "▶️";
+      enReproduccion = false;
+      barraProgreso.value = 0;
+      tiempoActual.textContent = "00:00";
     });
   </script>
 </body>
