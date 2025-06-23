@@ -47,40 +47,42 @@
   </div>
 
   <script>
-    const canciones = [
-      {
-        nombre: "Anbhul",
-        url: "https://dl.dropboxusercontent.com/scl/fi/c7d2h1496e6y9fbkytpx7/Anbhul.mp3?rlkey=ro6dqob1vh3uxdmc26yx20gko&dl=1"
-      },
-      {
-        nombre: "Barrio",
-        url: "https://dl.dropboxusercontent.com/scl/fi/vr6yk0hrwpwvny2foqrv2/Barrio.mp3?rlkey=gyhvovpnr95t1f7b12s8mgjvn&dl=1"
-      },
-      {
-        nombre: "Caco",
-        url: "https://dl.dropboxusercontent.com/scl/fi/qkp27k2j3c5y62h7zfztj/Caco.mp3?rlkey=1m7axmlk9n3tv45k2c0kcdpg6&dl=1"
-      },
-      {
-        nombre: "Gurutze",
-        url: "https://dl.dropboxusercontent.com/scl/fi/a7tt2ani7g6dr3wm650ms/Gurutze.mp3?rlkey=4mnd9onbixp0m75h8fbvj34mt&dl=1"
-      },
-      {
-        nombre: "JP",
-        url: "https://dl.dropboxusercontent.com/scl/fi/0eedptn8prlrt1kvmxduo/JP.mp3?rlkey=rwqgz9z2j6f1eh6h56jz99wrq&dl=1"
-      },
-      {
-        nombre: "Molla",
-        url: "https://dl.dropboxusercontent.com/scl/fi/dyysnj9wpgg8uzfqmevjr/Molla.mp3?rlkey=ks1sd1odsc6m3a9v8suvbivpe&dl=1"
-      },
-      {
-        nombre: "Pedo",
-        url: "https://dl.dropboxusercontent.com/scl/fi/ivfkre952qd06kyup2a7c/Pedo.mp3?rlkey=52mue9ovhvh29pk28a0ib34qd&dl=1"
-      },
-      {
-        nombre: "Zangano",
-        url: "https://dl.dropboxusercontent.com/scl/fi/7g3lw52ew8d1wdp3o6i1d/Zangano.mp3?rlkey=quu0nqse95ew3u5pq46zy58tv&dl=1"
-      }
-    ];
+   const proxy = "https://corsproxy.io/?";
+
+const canciones = [
+  {
+    nombre: "Anbhul",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/c7d2h1496e6y9fbkytpx7/Anbhul.mp3?rlkey=ro6dqob1vh3uxdmc26yx20gko&dl=1"
+  },
+  {
+    nombre: "Barrio",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/vr6yk0hrwpwvny2foqrv2/Barrio.mp3?rlkey=gyhvovpnr95t1f7b12s8mgjvn&dl=1"
+  },
+  {
+    nombre: "Caco",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/qkp27k2j3c5y62h7zfztj/Caco.mp3?rlkey=1m7axmlk9n3tv45k2c0kcdpg6&dl=1"
+  },
+  {
+    nombre: "Gurutze",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/a7tt2ani7g6dr3wm650ms/Gurutze.mp3?rlkey=4mnd9onbixp0m75h8fbvj34mt&dl=1"
+  },
+  {
+    nombre: "JP",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/0eedptn8prlrt1kvmxduo/JP.mp3?rlkey=rwqgz9z2j6f1eh6h56jz99wrq&dl=1"
+  },
+  {
+    nombre: "Molla",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/dyysnj9wpgg8uzfqmevjr/Molla.mp3?rlkey=ks1sd1odsc6m3a9v8suvbivpe&dl=1"
+  },
+  {
+    nombre: "Pedo",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/ivfkre952qd06kyup2a7c/Pedo.mp3?rlkey=52mue9ovhvh29pk28a0ib34qd&dl=1"
+  },
+  {
+    nombre: "Zangano",
+    url: proxy + "https://dl.dropboxusercontent.com/scl/fi/7g3lw52ew8d1wdp3o6i1d/Zangano.mp3?rlkey=quu0nqse95ew3u5pq46zy58tv&dl=1"
+  }
+];
 
     let audio = new Audio();
     let reproduciendo = false;
