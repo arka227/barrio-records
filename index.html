@@ -78,18 +78,18 @@
     canciones.forEach(cancion => {
       const btn = document.createElement("button");
       btn.textContent = cancion.nombre;
-   btn.onclick = () => {
+btn.onclick = () => {
   const proxyUrl = "https://corsproxy.io/?url=" + encodeURIComponent(cancion.url);
   audio.src = proxyUrl;
 
-        audio.play().then(() => {
-          reproduciendo = true;
-          playPauseBtn.textContent = "⏸️";
-          controles.style.display = "block";
-        }).catch(e => {
-          alert("Error al reproducir la canción. Comprueba la URL o permisos CORS.");
-          console.error(e);
-        });
+  audio.play().then(() => {
+    reproduciendo = true;
+    playPauseBtn.textContent = "⏸️";
+    controles.style.display = "block";
+  }).catch(e => {
+    alert("Error al reproducir la canción. Comprueba la URL o permisos CORS.");
+    console.error(e);
+  });
 
         audio.onloadedmetadata = () => {
           barraProgreso.max = Math.floor(audio.duration);
