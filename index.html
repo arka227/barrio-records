@@ -27,7 +27,7 @@
     }
     .controls {
       margin-top: 2rem;
-      display: none; /* Oculto inicialmente */
+      display: none;
     }
     input[type=range] {
       width: 80%;
@@ -79,7 +79,9 @@
       const btn = document.createElement("button");
       btn.textContent = cancion.nombre;
       btn.onclick = () => {
-        audio.src = cancion.url;
+        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(cancion.url);
+        audio.src = proxyUrl;
+
         audio.play().then(() => {
           reproduciendo = true;
           playPauseBtn.textContent = "⏸️";
@@ -104,7 +106,7 @@
     });
 
     playPauseBtn.onclick = () => {
-      if (!audio.src) return; // No hacer nada si no hay canción cargada
+      if (!audio.src) return;
 
       if (reproduciendo) {
         audio.pause();
