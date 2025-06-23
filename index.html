@@ -78,9 +78,9 @@
     canciones.forEach(cancion => {
       const btn = document.createElement("button");
       btn.textContent = cancion.nombre;
-      btn.onclick = () => {
-        const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(cancion.url);
-        audio.src = proxyUrl;
+   btn.onclick = () => {
+  const proxyUrl = "https://corsproxy.io/?url=" + encodeURIComponent(cancion.url);
+  audio.src = proxyUrl;
 
         audio.play().then(() => {
           reproduciendo = true;
